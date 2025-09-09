@@ -33,14 +33,14 @@
       background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
       border-bottom:1px solid rgba(30,41,59,.06);
     }
-    .wrap{max-width:1100px; margin:0 auto; padding:20px 16px}
+    .wrap{max-width:1280px; margin:0 auto; padding:20px 16px}
     .title{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
     .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--brand), var(--pastel-4)); box-shadow: var(--shadow); display:grid; place-items:center; color:white; font-weight:700}
     h1{font-size: clamp(20px, 3vw, 28px); margin:0}
     .sub{color:var(--muted); font-size:14px}
 
     /* Menú de clases */
-    .grid{display:grid; gap:14px; margin:20px 0 40px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))}
+    .grid{display:grid; gap:14px; margin:20px 0 40px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
     .card{background:var(--panel); border-radius: var(--radius); padding:16px 16px 18px; box-shadow: var(--shadow); border:1px solid rgba(30,41,59,.05); transition: transform .15s ease, box-shadow .15s ease}
     .card:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(17,24,39,.10) }
     .badge{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#0f172a; background:var(--pastel-2); padding:4px 8px; border-radius:999px; border:1px solid rgba(30,41,59,.08)}
@@ -51,7 +51,7 @@
 
     /* Modal / Panel */
     .overlay{ position:fixed; inset:0; background:rgba(15,23,42,.30); display:none; z-index:50 }
-    .panel{ position:fixed; inset:auto auto 0 0; right:0; top:0; width:min(980px, 100%); height:100%; background:var(--panel); border-top-left-radius: 20px; border-bottom-left-radius: 0; box-shadow: -6px 0 32px rgba(17,24,39,.15); transform: translateX(100%); transition: transform .25s ease; display:flex; flex-direction:column }
+    .panel{ position:fixed; top:0; right:0; bottom:0; left:auto; width: clamp(340px, 80vw, 980px); height:100%; background:var(--panel); border-top-left-radius:20px; box-shadow:-6px 0 32px rgba(17,24,39,.15); transform: translateX(100%); transition: transform .25s ease; display:flex; flex-direction:column }
     .panel.open{ transform:none }
     .overlay.show{ display:block }
     .panel-header{ padding:16px; border-bottom:1px solid rgba(30,41,59,.06); display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(180deg, var(--pastel-4), #fff) }
@@ -62,11 +62,11 @@
     .btn.primary{ background:var(--brand-2) }
     .btn:focus{ outline: 3px solid var(--ring) }
 
-    .tabs{ display:flex; gap:8px; padding:12px 16px; border-bottom:1px solid rgba(30,41,59,.06); flex-wrap:wrap }
+    .tabs{ display:flex; gap:8px; padding:12px 16px; border-bottom:1px solid rgba(30,41,59,.06); flex-wrap:nowrap; overflow-x:auto }
     .tab-btn{ padding:8px 10px; border-radius:999px; border:1px solid rgba(30,41,59,.08); background:#fff; font-weight:600; font-size:13px; cursor:pointer }
     .tab-btn.active{ background:var(--pastel-2); border-color: rgba(30,41,59,.15) }
 
-    .panel-body{ padding: 8px 16px 80px; overflow:auto }
+    .panel-body{ padding:12px 16px 96px; overflow:auto; max-width:900px; margin:0 auto }
     section{ background: linear-gradient(180deg, #fff, var(--pastel-1)); border:1px solid rgba(30,41,59,.06); border-radius:16px; padding:16px; margin:12px 0; box-shadow: var(--shadow) }
     section h4{ margin:0 0 10px; font-size:16px }
     ul{ margin:8px 0 0 18px }
@@ -76,7 +76,9 @@
     .foot{ text-align:center; padding:20px 0 40px; color:var(--muted); font-size:12px }
     .tip{ font-size:13px; color:var(--muted) }
 
-    @media (max-width: 720px){ .panel{ width:100%; border-top-left-radius:16px; border-top-right-radius:16px } }
+    @media (max-width:720px){ .panel{ width:100%; left:0; border-top-left-radius:16px; border-top-right-radius:16px } }
+    body.modal-open{ overflow:hidden; }
+    @media print{ header, main, .overlay{ display:none !important; } .panel{ position:static; transform:none; box-shadow:none; width:auto; height:auto; } body{ background:#fff !important; } section{ break-inside: avoid; page-break-inside: avoid; } }
   </style>
 </head>
 <body>
@@ -689,7 +691,7 @@
         <p>${s.subtitulo}</p>
         <button aria-label="Abrir guía de la Clase ${s.id}">Abrir guía</button>
       `;
-      el.querySelector('button').addEventListener('click', () => openPanel(s));
+      el.querySelector('button').addEventListener('click', (e) => openPanel(s, e.currentTarget));
       cards.appendChild(el);
     });
 
@@ -728,9 +730,12 @@ const TAB_ORDER = [
 ];
 
 let current = null;
+let triggerBtn = null;
 
-function openPanel(s){
+function openPanel(s, trigger){
   current = s;
+  triggerBtn = trigger || null;
+  document.body.classList.add('modal-open');
   overlay.classList.add('show');
   panel.classList.add('open');
   overlay.setAttribute('aria-hidden','false');
@@ -744,6 +749,11 @@ function closePanel(){
   overlay.classList.remove('show');
   panel.classList.remove('open');
   overlay.setAttribute('aria-hidden','true');
+  document.body.classList.remove('modal-open');
+  if(triggerBtn){
+    triggerBtn.focus();
+    triggerBtn = null;
+  }
 }
 
 function renderTabs(s){
