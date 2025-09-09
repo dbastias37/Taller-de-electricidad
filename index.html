@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guía Docente · Taller de Electricidad STEAM</title>
+  <style>
+    :root{
+      --bg: #f8fafc;               /* fondo general */
+      --panel: #ffffff;             /* paneles/cards */
+      --text: #1f2937;              /* texto base */
+      --muted: #475569;             /* texto secundario */
+      --brand: #7c83fd;             /* acento suave */
+      --brand-2: #a3d9ff;           /* acento pastel */
+      --pastel-1:#eaf4ff;           /* azul pastel */
+      --pastel-2:#e8fff2;           /* menta pastel */
+      --pastel-3:#fff3e8;           /* durazno pastel */
+      --pastel-4:#f3e8ff;           /* lila pastel */
+      --ring: rgba(124,131,253,.25);
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(17,24,39,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--pastel-1), var(--bg));
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65));
+      border-bottom:1px solid rgba(30,41,59,.06);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:20px 16px}
+    .title{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+    .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--brand), var(--pastel-4)); box-shadow: var(--shadow); display:grid; place-items:center; color:white; font-weight:700}
+    h1{font-size: clamp(20px, 3vw, 28px); margin:0}
+    .sub{color:var(--muted); font-size:14px}
+
+    /* Menú de clases */
+    .grid{display:grid; gap:14px; margin:20px 0 40px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))}
+    .card{background:var(--panel); border-radius: var(--radius); padding:16px 16px 18px; box-shadow: var(--shadow); border:1px solid rgba(30,41,59,.05); transition: transform .15s ease, box-shadow .15s ease}
+    .card:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(17,24,39,.10) }
+    .badge{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#0f172a; background:var(--pastel-2); padding:4px 8px; border-radius:999px; border:1px solid rgba(30,41,59,.08)}
+    .card h3{margin:10px 0 6px; font-size:18px}
+    .card p{margin:0; color:var(--muted); font-size:14px; min-height:40px}
+    .card button{ margin-top:12px; width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(30,41,59,.08); background: linear-gradient(180deg, #ffffff, var(--pastel-3)); cursor:pointer; font-weight:600; box-shadow: 0 4px 10px rgba(17,24,39,.06) }
+    .card button:focus{ outline: 3px solid var(--ring) }
+
+    /* Modal / Panel */
+    .overlay{ position:fixed; inset:0; background:rgba(15,23,42,.30); display:none; z-index:50 }
+    .panel{ position:fixed; inset:auto auto 0 0; right:0; top:0; width:min(980px, 100%); height:100%; background:var(--panel); border-top-left-radius: 20px; border-bottom-left-radius: 0; box-shadow: -6px 0 32px rgba(17,24,39,.15); transform: translateX(100%); transition: transform .25s ease; display:flex; flex-direction:column }
+    .panel.open{ transform:none }
+    .overlay.show{ display:block }
+    .panel-header{ padding:16px; border-bottom:1px solid rgba(30,41,59,.06); display:flex; align-items:center; justify-content:space-between; gap:10px; background:linear-gradient(180deg, var(--pastel-4), #fff) }
+    .panel-title{ margin:0; font-size:20px }
+    .panel-actions{ display:flex; gap:8px }
+    .btn{ border:1px solid rgba(30,41,59,.10); background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600 }
+    .btn.secondary{ background:var(--pastel-1) }
+    .btn.primary{ background:var(--brand-2) }
+    .btn:focus{ outline: 3px solid var(--ring) }
+
+    .tabs{ display:flex; gap:8px; padding:12px 16px; border-bottom:1px solid rgba(30,41,59,.06); flex-wrap:wrap }
+    .tab-btn{ padding:8px 10px; border-radius:999px; border:1px solid rgba(30,41,59,.08); background:#fff; font-weight:600; font-size:13px; cursor:pointer }
+    .tab-btn.active{ background:var(--pastel-2); border-color: rgba(30,41,59,.15) }
+
+    .panel-body{ padding: 8px 16px 80px; overflow:auto }
+    section{ background: linear-gradient(180deg, #fff, var(--pastel-1)); border:1px solid rgba(30,41,59,.06); border-radius:16px; padding:16px; margin:12px 0; box-shadow: var(--shadow) }
+    section h4{ margin:0 0 10px; font-size:16px }
+    ul{ margin:8px 0 0 18px }
+    li{ margin:6px 0 }
+    .kpi{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:8px; margin-top:8px }
+    .pill{ background:var(--pastel-3); padding:8px 10px; border-radius:999px; border:1px solid rgba(30,41,59,.08); font-size:12px; color:#334155 }
+    .foot{ text-align:center; padding:20px 0 40px; color:var(--muted); font-size:12px }
+    .tip{ font-size:13px; color:var(--muted) }
+
+    @media (max-width: 720px){ .panel{ width:100%; border-top-left-radius:16px; border-top-right-radius:16px } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <div class="logo" aria-hidden="true">⚡</div>
+        <div>
+          <h1>Guía Docente · Taller de Electricidad STEAM</h1>
+          <div class="sub">10 sesiones · 45 minutos · Edades 6–14 · Enfoque STEAM (Science, Technology, Engineering, Arts, Math)</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section style="background:linear-gradient(180deg, #fff, var(--pastel-2)); border:1px solid rgba(30,41,59,.06); border-radius:16px; padding:16px; box-shadow: var(--shadow)">
+      <h2 style="margin:6px 0 4px;font-size:20px">Menú de clases</h2>
+      <p style="margin:0;color:var(--muted)">Haz clic en una clase para abrir su guía con pestañas. Cada pestaña está enriquecida con <strong>objetivos desglosados, pasos detallados, errores comunes, seguridad, diferenciación por edades, vocabulario clave</strong> y <strong>extensiones</strong>. Diseño pastel y sin distracciones.</p>
+    </section>
+
+    <div id="cards" class="grid" aria-live="polite"></div>
+
+    <div class="foot">Versión estática. Usa “Imprimir” dentro del panel para exportar PDF. – Academia WIW</div>
+  </main>
+
+  <!-- Overlay & Panel -->
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+  <aside class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle">
+    <div class="panel-header">
+      <h3 class="panel-title" id="panelTitle">Clase</h3>
+      <div class="panel-actions">
+        <button class="btn secondary" id="printBtn" title="Imprimir/Exportar">🖨️ Imprimir</button>
+        <button class="btn" id="closeBtn" title="Salir">⟵ Salir</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Pestañas de contenido"></nav>
+    <div class="panel-body" id="tabContent"></div>
+  </aside>
+
+  <script>
+    // =============================
+    // ESTRUCTURA DE SESIONES (enriquecida)
+    // =============================
+
+    const sesiones = [
+      // =============== S1 ===============
+      {
+        id:1,
+        titulo:"Mi primera luz eléctrica",
+        subtitulo:"Fundamentos: batería, polaridad y LED",
+        badge:"S1 • Fundamentos",
+        iniciativa:"¡Bienvenidos pequeños inventores! Hoy descubriremos cómo una fuente (batería) y un LED pueden crear luz de forma segura.",
+        objetivo:[
+          "Identificar la pila como fuente de energía de CC y reconocer sus polos (+/−).",
+          "Explicar la polaridad del LED (ánodo/cátodo) y su relación con el encendido.",
+          "Armar un circuito simple (pila–LED) y verificar continuidad visual (luz estable).",
+          "Registrar observaciones (encendido, inversión de polaridad) en el Cuaderno del Inventor.",
+          "Introducir criterios de seguridad: no cortocircuitar, no forzar patas del LED, manipulación responsable."
+        ],
+        materiales:[
+          "• Por estudiante: LED difuso blanco (x2), pila botón 3V CR2032 (x1) con portapilas, cinta aislante, cartulina A5 para linterna, stickers.",
+          "• Docente: LEDs extra de colores, tijeras de seguridad, marcadores, cinta de enmascarar para señalizar mesas.",
+          "• Organización: canasto por mesa con kits numerados; caja de descarte para pilas agotadas; paños para limpieza.",
+          "• Opcional: plantillas impresas de linternas de papel, etiquetas 'ánodo/cátodo'."
+        ],
+        paso:[
+          {titulo:"Activación (5')", items:[
+            "Mostrar pila y LED apagado; recoger predicciones rápidas (mano alzada).",
+            "Analogía: río que fluye → la corriente eléctrica necesita dirección y camino completo."
+          ]},
+          {titulo:"Desafío (5')", items:[
+            "Meta visible: 'Encender LED de forma estable y explicar por qué'.",
+            "Criterios: LED enciende; reproducible 2×; explica polaridad con dibujo."
+          ]},
+          {titulo:"Construcción y pruebas (25')", items:[
+            "Exploración (7'): probar LED en ambas orientaciones; registrar cuál enciende.",
+            "Demostración (5'): pata larga (ánodo, +) y parte plana (cátodo, −).",
+            "Construcción (8'): linterna de papel; fijar LED con cinta sin pellizcar patas.",
+            "Pruebas (5'): si parpadea, revisar presión/posición de contactos."
+          ]},
+          {titulo:"Medición y datos (5')", items:[
+            "Checklist: ¿encendido estable? ¿qué pasó al invertir polaridad?",
+            "Evidencia: foto del producto terminado (si posible)."
+          ]},
+          {titulo:"Cierre (5')", items:[
+            "Exposición relámpago: 30 s; 1 dificultad + 1 hallazgo.",
+            "Vincular con la vida cotidiana: ¿dónde vemos LEDs?"
+          ]}
+        ],
+        preguntas:[
+          "¿Qué pasa si conecto el LED al revés? ¿por qué?",
+          "¿Cómo reconozco el lado positivo de la pila y del LED?",
+          "¿Qué significa 'circuito completo'?",
+          "¿Por qué el LED apenas se calienta frente a otras ampolletas?",
+          "Si no enciende, ¿qué compruebas primero? (diagnóstico)"
+        ],
+        respuestas:[
+          "El LED es un diodo: solo conduce en un sentido (ánodo a +, cátodo a −).",
+          "Circuito completo = camino cerrado desde + de la pila → LED → − de la pila.",
+          "LEDs son eficientes (más luz con menos energía) y dirigen la corriente en un sentido.",
+          "La pata larga indica ánodo; en algunos LEDs la carcasa plana marca el cátodo.",
+          "Diagnóstico: revisar polaridad, presión de contacto, y que las patas no se toquen."
+        ],
+        incentivar:[
+          "'Momento mágico': apagar luces 10 s y encender todas las linternas.",
+          "Sello 'Ingeniero Junior' a quien haga un diagrama simple.",
+          "Galería de linternas: foto grupal para familias.",
+          "Personalización libre para sentido de pertenencia."
+        ],
+        exposicion:[
+          "Mostrar linterna encendida y orientación correcta del LED.",
+          "Un problema y cómo lo resolvió (p. ej., patas en corto).",
+          "Un uso en casa (p. ej., lectura nocturna)."
+        ],
+        felicitacion:"¡Increíble! Dominaron el secreto de la polaridad. Piocha del Primer Circuito ⚡.",
+        foco:[
+          "Polaridad y dirección de corriente (diodo).",
+          "Contacto firme sin doblar en exceso las patas.",
+          "Seguridad con pilas botón (no llevar a la boca, no perforar).",
+          "Diagrama mínimo con símbolos +/−."
+        ],
+        apoyos:[
+          "Tarjetas 'ánodo/cátodo' por mesa.",
+          "Conectores grandes para motricidad fina.",
+          "Parejas tutor–aprendiz (13–14 ayudan a 6–8).",
+          "Estación tranquila para reexplicar."
+        ],
+        evaluacion:[
+          "Lista de cotejo: conecta, explica polaridad, registra un dato.",
+          "Rúbrica (1–4): comprensión, armado, comunicación.",
+          "Evidencia: foto + nota con dibujo del circuito."
+        ],
+        seguridad:[
+          "Pilas botón en contenedor seguro al finalizar.",
+          "No forzar patas del LED.",
+          "Evitar cortocircuitos (patas tocándose en la pila).",
+          "Lavado de manos tras usar adhesivos."
+        ],
+        errores:[
+          "LED invertido → no enciende (invertir).",
+          "Patas en corto → separar/aislar.",
+          "Contacto flojo → parpadeo (reforzar).",
+          "Confusión de +/− → marcar el + con plumón."
+        ],
+        vocabulario:[
+          "Fuente (batería)", "Polaridad", "LED", "Circuito", "Ánodo/Cátodo"
+        ],
+        diferenciacion:[
+          "6–8: plantillas pre-dobladas y código de color.",
+          "9–12: símbolo del diodo en el esquema.",
+          "13–14: noción de corriente vs voltaje y resistencias (solo idea)."
+        ],
+        extensiones:[
+          "Hogar: inventario de LEDs indicadores.",
+          "Arte: sombras con linterna de papel.",
+          "Tecnología: por qué usar resistencia con fuentes mayores.",
+          "Reciclaje responsable de baterías."
+        ],
+        logistica:[
+          "Kits en bolsas zip; portapilas marcado con +.",
+          "Mesas en isla; estación de soporte con cinta y tijeras.",
+          "Cronómetro visible por fases; música suave.",
+          "Recolectar pilas sueltas al cierre."
+        ],
+        mensaje:"La electricidad puede controlarse de forma segura y creativa.",
+        ceremonia:"Piocha del Primer Circuito ⚡"
+      },
+
+      // =============== S2 ===============
+      {
+        id:2,
+        titulo:"Detectives de conductividad",
+        subtitulo:"Materiales conductores y aislantes",
+        badge:"S2 • Materiales",
+        iniciativa:"Investigamos qué materiales dejan pasar la electricidad y cuáles la bloquean, y por qué eso nos mantiene seguros.",
+        objetivo:[
+          "Construir un probador simple (fuente–LED–cables).",
+          "Clasificar ≥8 materiales con evidencia.",
+          "Relacionar conductor/aislante con usos cotidianos.",
+          "Registrar tabla de resultados y conclusión.",
+          "Explicar a nivel cualitativo: metales (electrones libres) vs polímeros."
+        ],
+        materiales:[
+          "Kit LED + batería y caimanes.",
+          "Muestras: moneda, clip, aluminio, madera, cartón, plástico, goma, grafito, agua con sal (docente).",
+          "Goma EVA y ojos móviles (monstruo conductor).",
+          "Tabla de registro y plumones."
+        ],
+        paso:[
+          {titulo:"Activación (5')", items:["Moneda vs papel; hipótesis y por qué."]},
+          {titulo:"Desafío (5')", items:["Clasificar 8+ materiales y crear un monstruo que use un conductor para encender LED."]},
+          {titulo:"Experimentación (15')", items:["Probar con probador y registrar (enciende/no enciende)."]},
+          {titulo:"Construcción (10')", items:["Integrar conductor elegido en el monstruo."]},
+          {titulo:"Medición (5')", items:["Completar tabla y marcar sorpresas."]},
+          {titulo:"Cierre (5')", items:["Patrón: metales conducen; plásticos/maderas aíslan."]}
+        ],
+        preguntas:[
+          "¿Qué propiedad de los metales permite la conducción?",
+          "¿Por qué los cables tienen cubierta plástica?",
+          "¿Agua pura vs agua con sal?",
+          "¿Qué material te sorprendió y por qué?",
+          "¿Qué riesgos evitamos con aislantes?"
+        ],
+        respuestas:[
+          "Metales: electrones libres → movimiento de carga.",
+          "Cubierta plástica: seguridad; evita contacto con el metal.",
+          "Sales aportan iones → aumenta conducción (solo en estación docente).",
+          "Aislantes evitan descargas: ¡protección!"
+        ],
+        incentivar:[
+          "Reto material comodín (grafito).",
+          "Pizarra de hallazgos: 1 descubrimiento por equipo.",
+          "Monstruo con nombre científico-divertido."
+        ],
+        exposicion:[
+          "Mostrar monstruo y qué parte es conductora.",
+          "Un material que no funcionó y por qué.",
+          "Comparar tabla con otro equipo."
+        ],
+        felicitacion:"¡Excelente trabajo, detectives! Piocha del Detective de Materiales 🔍.",
+        foco:[
+          "Enchufe: plástico afuera, metal adentro.",
+          "Nunca tocar metal expuesto.",
+          "Ciclo científico: hipótesis → prueba → registro → conclusión."
+        ],
+        apoyos:[
+          "Materiales preclasificados por color.",
+          "Pictogramas para tabla.",
+          "Caimanes grandes para agarre fácil.",
+          "Demostración controlada con agua salada."
+        ],
+        evaluacion:[
+          "Registra 8 materiales correctamente.",
+          "Explica por qué un aislante es seguro.",
+          "Evidencia del monstruo conductor."
+        ],
+        seguridad:[
+          "Nada de líquidos sin supervisión.",
+          "No pelar cables; revisar pinzas.",
+          "Higiene post actividad."
+        ],
+        errores:[
+          "Contacto flojo → falso negativo.",
+          "'No enciende' ≠ malo: puede ser aislante útil.",
+          "Manos húmedas alteran pruebas → secar."
+        ],
+        vocabulario:["Conductor", "Aislante", "Continuidad", "Seguridad eléctrica"],
+        diferenciacion:[
+          "6–8: tabla con emojis (💡/🚫).",
+          "9–12: categoría 'semi-conductivo' (grafito).",
+          "13–14: noción de resistividad y casos industriales."
+        ],
+        extensiones:[
+          "Hogar: inventario metal vs plástico.",
+          "Arte: circuito oculto en el monstruo.",
+          "Ciencias: lápiz blando vs duro."
+        ],
+        logistica:[
+          "Estaciones con 8–10 materiales y rotación.",
+          "Zonas sin líquidos señalizadas.",
+          "Contenedor de piezas pequeñas al final."
+        ],
+        mensaje:"La seguridad eléctrica depende de elegir bien los materiales.",
+        ceremonia:"Piocha del Detective de Materiales 🔍"
+      },
+
+      // =============== S3 ===============
+      {
+        id:3,
+        titulo:"Controladores de corriente",
+        subtitulo:"Circuitos básicos e interruptores",
+        badge:"S3 • Control",
+        iniciativa:"Abrir y cerrar el camino de la electricidad creando nuestros propios interruptores.",
+        objetivo:[
+          "Construir un interruptor casero por contacto que funcione 10× seguidas.",
+          "Integrarlo en un circuito LED–batería.",
+          "Explicar 'circuito abierto' vs 'circuito cerrado' con ejemplos.",
+          "Registrar pruebas (activaciones/fallos).",
+          "Valorar ahorro y seguridad."
+        ],
+        materiales:[
+          "LED, batería, caimanes.",
+          "Clips, cartón rígido, encuadernadores (docente).",
+          "Cinta aislante, stickers ON/OFF.",
+          "Opcional: microinterruptores comerciales."
+        ],
+        paso:[
+          {titulo:"Activación (5')", items:["Ver interruptor del aula; imaginar el interior."]},
+          {titulo:"Desafío (5')", items:["Interruptor casero confiable (10 activaciones)."]},
+          {titulo:"Construcción (25')", items:["Mecanismo por presión (8'), integrar (10'), carcasa segura (7')."]},
+          {titulo:"Medición (5')", items:["Tabla de 10 usos (✔/✖) y ajustes."]},
+          {titulo:"Cierre (5')", items:["Demostraciones de ON/OFF con explicación del punto de contacto."]}
+        ],
+        preguntas:[
+          "¿Qué separa o une los contactos?",
+          "¿Cómo evitar falsos contactos?",
+          "¿Qué dispositivos controlas a diario?",
+          "¿Cómo contribuyen al ahorro?"
+        ],
+        respuestas:[
+          "Separar = abierto; unir = cerrado.",
+          "Topes y fijación firme en cartón.",
+          "Interruptores en casa/auto/juguetes." 
+        ],
+        incentivar:["Reto de resistencia", "Premio a la solución más ingeniosa"],
+        exposicion:["Demostrar ON/OFF y explicar una mejora"],
+        felicitacion:"¡Impecable control! Piocha del Interruptor ⚡🔘.",
+        foco:["Vocabulario abierto/cerrado; ergonomía; comparación con uno comercial"],
+        apoyos:["Plantillas con agujeros; clips grandes; parejas; guía fotográfica"],
+        evaluacion:["Funciona 10×", "Describe abierto/cerrado con dibujo"],
+        seguridad:["Chinches solo docente; no forzar perforaciones; cables sin tensión"],
+        errores:["Contacto flojo → parpadeo; LED invertido → revisar polaridad"],
+        vocabulario:["Circuito abierto", "Circuito cerrado", "Contacto", "Interruptor"],
+        diferenciacion:["6–8: pre-montado + decoración", "9–12: diseño propio", "13–14: conmutación de dos vías (noción)"],
+        extensiones:["Vida útil: cuántas activaciones soporta", "Materiales de contacto: moneda vs clip"],
+        logistica:["Mesa de test con fuente fija; checklist antes de mostrar"],
+        mensaje:"Control eléctrico = seguridad + ahorro.",
+        ceremonia:"Piocha del Interruptor ⚡🔘"
+      },
+
+      // =============== S4 ===============
+      {
+        id:4,
+        titulo:"Bichos eléctricos vivientes",
+        subtitulo:"Motores, vibración y movimiento",
+        badge:"S4 • Motores",
+        iniciativa:"Robots sencillos que se mueven por vibración y cómo ajustar su comportamiento.",
+        objetivo:[
+          "Conectar motor vibratorio y observar conversión eléctrica→mecánica.",
+          "Construir bicho que se desplace ≥20 cm.",
+          "Ajustar peso/fricción/altura para modificar trayectoria.",
+          "Registrar cambios y resultados."
+        ],
+        materiales:[
+          "Motor vibratorio, portapilas 2×AA + baterías.",
+          "Vaso plástico, plumones (patas), pompones, ojos, EVA, cinta, pegamento.",
+          "Caimanes, pesas pequeñas (clips)."
+        ],
+        paso:[
+          {titulo:"Activación (5')", items:["Ver motor vibrando; ¿dónde usamos motores a diario?"]},
+          {titulo:"Desafío (5')", items:["Moverse 20 cm sin caer."]},
+          {titulo:"Construcción (25')", items:["Montar motor (5'), armar cuerpo (10'), optimizar (10')."]},
+          {titulo:"Medición (5')", items:["Tabla: variable → efecto (rápido, lento, circular)."]},
+          {titulo:"Cierre (5')", items:["Carrera y reflexión de ajustes."]}
+        ],
+        preguntas:["¿Por qué vibra?", "¿Cómo afecta la fricción?", "¿Qué pasa si subes el centro de masa?"],
+        respuestas:["Peso descentrado en eje → vibración.", "Más fricción ayuda a avanzar pero reduce velocidad.", "Centro alto → inestabilidad (caídas)."],
+        incentivar:["Trayectorias creativas", "Video corto para portafolio"],
+        exposicion:["Mostrar movimiento y explicar un ajuste"],
+        felicitacion:"¡Vida eléctrica lograda! Piocha del Motor ⚡🔄.",
+        foco:["Variables de diseño; ejemplos cotidianos (vibración en móviles)"],
+        apoyos:["Base pre-armada; ayuda en pegado; objetivo alterno: vibrar sin moverse"],
+        evaluacion:["Recorre 20 cm o justifica ajustes", "Nombra 2 variables y su efecto"],
+        seguridad:["Evitar cablerío suelto; no trabajar al borde"],
+        errores:["Motor mal fijado → vibración pobre; peso mal distribuido → vuelcos"],
+        vocabulario:["Motor DC", "Vibración", "Fricción", "Centro de masa"],
+        diferenciacion:["6–8: plantilla de cuerpo", "9–12: 2 materiales de patas", "13–14: tiempos/distancias y gráfica"],
+        extensiones:["Pista con obstáculos", "Comparar 1×AA vs 2×AA"],
+        logistica:["Cinta de meta; zonas acolchadas"],
+        mensaje:"La electricidad puede transformarse en movimiento útil y divertido.",
+        ceremonia:"Piocha del Motor ⚡🔄"
+      },
+
+      // =============== S5 ===============
+      {
+        id:5,
+        titulo:"Tarjetas musicales mágicas",
+        subtitulo:"Electricidad que produce sonido (buzzer)",
+        badge:"S5 • Sonido",
+        iniciativa:"Arte + tecnología: tarjeta que suena e ilumina al abrirse.",
+        objetivo:[
+          "Probar buzzer piezoeléctrico y LED.",
+          "Construir interruptor por apertura (≈90°).",
+          "Integrar estética y función en la tarjeta.",
+          "Explicar de forma cualitativa cómo la vibración produce sonido."
+        ],
+        materiales:["Buzzer piezo, LED, portapilas 3V, cinta de cobre, cartulina, foam delgado, decoraciones"],
+        paso:[
+          {titulo:"Activación (5')", items:["Escuchar buzzer; identificar polaridad si aplica"]},
+          {titulo:"Desafío (5')", items:["Tarjeta que se active al abrir 90° (luz + sonido)"]},
+          {titulo:"Construcción (25')", items:["Probar componentes (5'), contacto por apertura (10'), integrar y decorar (10')"]},
+          {titulo:"Medición (5')", items:["Ajustar presión para evitar activación accidental"]},
+          {titulo:"Cierre (5')", items:["Concierto de tarjetas y lectura del mensaje"]}
+        ],
+        preguntas:["¿Qué vibra para producir sonido?", "¿Cómo evitar que suene al estar cerrada?"],
+        respuestas:["Un disco vibra rápidamente al recibir energía: ondas sonoras.", "Separadores (foam) y buen diseño de contacto."],
+        incentivar:["Concierto/exhibición", "Elección libre del color LED"],
+        exposicion:["Activar tarjeta, leer mensaje, explicar el mecanismo"],
+        felicitacion:"¡Arte + tecnología! Piocha Musical ⚡🎵.",
+        foco:["Proyecto multisensorial; relación con timbres/alarma"],
+        apoyos:["Plantilla pre-cortada; opción de interruptor manual"],
+        evaluacion:["Se activa al abrir", "Explica el contacto"],
+        seguridad:["Bordes de cinta de cobre; evitar puntas metálicas expuestas"],
+        errores:["Contacto permanente → suena siempre; poco contacto → no suena"],
+        vocabulario:["Piezoelectricidad (noción)", "Frecuencia", "Interruptor"],
+        diferenciacion:["6–8: esquema con dibujos", "9–12: diagrama con símbolos", "13–14: comparar tonos"],
+        extensiones:["Tarjeta temática (efemérides)", "Mini alarma"] ,
+        logistica:["Evitar glitter suelto en área de contactos; secado rápido"],
+        mensaje:"Diseñar es comunicar: luz y sonido como lenguaje.",
+        ceremonia:"Piocha Musical ⚡🎵"
+      },
+
+      // =============== S6 ===============
+      {
+        id:6,
+        titulo:"Lámparas de diseñador",
+        subtitulo:"Difusión de luz y diseño funcional",
+        badge:"S6 • Luz",
+        iniciativa:"Cómo los materiales moldean la luz para crear lámparas agradables y estables.",
+        objetivo:[
+          "Comparar LED directo vs con difusor.",
+          "Construir lámpara estable que ilumine ≥15 cm.",
+          "Seleccionar un difusor por confort visual y estética.",
+          "Justificar la elección por escrito."
+        ],
+        materiales:["LEDs, portapilas 3V, interruptor, vasos translúcidos/papel pergamino, algodón/tissue/filtros, base MDF, adhesivos, decoraciones"],
+        paso:[
+          {titulo:"Activación (5')", items:["Comparación lado a lado: LED desnudo vs difusores"]},
+          {titulo:"Desafío (5')", items:["Difundir luz suavemente y asegurar estabilidad"]},
+          {titulo:"Construcción (25')", items:["Probar 3 difusores (8'), base/cuerpo (10'), ajustes estéticos (7')"]},
+          {titulo:"Medición (5')", items:["Comprobar área iluminada (plantilla/regla)"]},
+          {titulo:"Cierre (5')", items:["Galería encendida y justificación"]}
+        ],
+        preguntas:["¿Qué hace amable a la luz?", "¿Cómo aseguras estabilidad?"],
+        respuestas:["Translúcidos dispersan luz; evitan deslumbramiento.", "Base amplia y centro de masa bajo."],
+        incentivar:["Foto de producto", "Premio al mejor equilibrio función/estética"],
+        exposicion:["Encender, mostrar difusor, justificar elección"],
+        felicitacion:"¡Diseño profesional! Piocha del Diseñador ⚡💡.",
+        foco:["Función + belleza; eficiencia (solo LEDs necesarios)"] ,
+        apoyos:["Base pre-perforada; difusores pre-cortados"],
+        evaluacion:["Estable", "Difusión adecuada", "Justifica elección"],
+        seguridad:["No exceder 3V; cables bien fijados"],
+        errores:["Difusor muy opaco → poca luz; base pequeña → caída"],
+        vocabulario:["Difusión", "Translúcido", "Confort visual"],
+        diferenciacion:["6–8: dos difusores preseleccionados", "9–12: tabla pros/contras", "13–14: mini ensayo de diseño"],
+        extensiones:["Fotografía de producto", "Marca/etiqueta de lámpara"],
+        logistica:["Zona oscura para test; plantillas de 15 cm"],
+        mensaje:"Los materiales transforman la luz: diseñar es decidir con propósito.",
+        ceremonia:"Piocha del Diseñador ⚡💡"
+      },
+
+      // =============== S7 ===============
+      {
+        id:7,
+        titulo:"Electricistas de casa",
+        subtitulo:"Circuitos domésticos y seguridad",
+        badge:"S7 • Vivienda",
+        iniciativa:"Simularemos una habitación con su cableado básico, pensando como electricistas.",
+        objetivo:[
+          "Mapear una habitación (luz + enchufe simulado).",
+          "Implementar ≥2 circuitos independientes.",
+          "Justificar ubicación de interruptores/enchufes.",
+          "Comprender nociones de seguridad (protecciones generales)."
+        ],
+        materiales:["Foamboard/cartón, LEDs, interruptores, portapilas múltiples, cables de colores, cinta, muebles mini, papel decorativo"],
+        paso:[
+          {titulo:"Activación (5')", items:["Plano simple y discusión de distribución"]},
+          {titulo:"Desafío (5')", items:["Diorama con 2 circuitos independientes (luz + enchufe)"]},
+          {titulo:"Construcción (25')", items:["Mapa (8'), instalación (12'), ambientación/pruebas (5')"]},
+          {titulo:"Medición (5')", items:["Diagrama final a color"]},
+          {titulo:"Cierre (5')", items:["Tour de habitaciones y feedback"]}
+        ],
+        preguntas:["¿Qué pasaría con un solo interruptor para todo?", "¿Dónde conviene un enchufe extra?"],
+        respuestas:["Dividir circuitos da comodidad/seguridad.", "Puntos cercanos a zonas de uso (escritorio, velador)."],
+        incentivar:["Elegir tipo de habitación", "Fotografiar proceso"],
+        exposicion:["Demostrar independencia de circuitos; mostrar mapa eléctrico"],
+        felicitacion:"¡Nivel profesional! Piocha del Electricista ⚡🏠.",
+        foco:["Planificación previa; seguridad domiciliaria básica"],
+        apoyos:["Plantillas con ubicaciones; código de colores obligatorio"],
+        evaluacion:["2 circuitos independientes", "Ubicación justificada", "Diagrama claro"],
+        seguridad:["Nunca usar red real; maquetas con pilas", "Cables ordenados y fijados"],
+        errores:["Mezclar retornos/idas → no responde", "Falta de interruptor en acceso"],
+        vocabulario:["Circuito independiente", "Fusible/interruptor general (noción)"],
+        diferenciacion:["6–8: plantilla base", "9–12: distribución elegida y justificada", "13–14: doble control (conceptual)"],
+        extensiones:["Cocina/baño (zonas protegidas)", "Reducir alargadores con buen diseño"],
+        logistica:["Rotular cables por color; fotos antes de cerrar paredes"],
+        mensaje:"El buen diseño eléctrico es invisible pero esencial.",
+        ceremonia:"Piocha del Electricista ⚡🏠"
+      },
+
+      // =============== S8 ===============
+      {
+        id:8,
+        titulo:"Maestros de conexiones",
+        subtitulo:"Serie vs paralelo",
+        badge:"S8 • Conexiones",
+        iniciativa:"Compararemos dos modos de conexión y cuándo conviene cada uno.",
+        objetivo:[
+          "Construir serie y paralelo (3 LEDs cada uno).",
+          "Observar brillo e independencia al desconectar un LED.",
+          "Concluir por qué el hogar usa paralelo.",
+          "Registrar tabla comparativa y presentarla."
+        ],
+        materiales:["6 LEDs mismo color, 2 portapilas, cables, interruptores, base marcada, etiquetas, multímetro (9+)"],
+        paso:[
+          {titulo:"Activación (5')", items:["Luces navideñas antiguas (serie) vs modernas (paralelo)"]},
+          {titulo:"Desafío (5')", items:["Construir y comparar ambos circuitos"]},
+          {titulo:"Construcción (25')", items:["Serie (8'), Paralelo (8'), pruebas (9')"]},
+          {titulo:"Medición (5')", items:["Tabla: brillo, independencia, consumo percibido"]},
+          {titulo:"Cierre (5')", items:["Conclusiones en mini-plenario"]}
+        ],
+        preguntas:["¿Qué pasa al sacar un LED en serie? ¿y en paralelo?", "¿Qué cambia en el brillo?"],
+        respuestas:["Serie: un solo camino; al cortar uno, se apagan todos.", "Paralelo: ramas independientes; cada LED recibe alimentación propia."],
+        incentivar:["Laboratorio libre; hipótesis antes de probar"],
+        exposicion:["Mostrar ambos, desconectar uno y explicar diferencias"],
+        felicitacion:"¡Pensamiento sistémico! Piocha del Circuito ⚡🔗.",
+        foco:["Elegir topología según necesidad: simple vs confiable"],
+        apoyos:["Código de colores (rojo=serie/azul=paralelo); diagramas guía"],
+        evaluacion:["Ambos operativos", "Explica 1 ventaja del paralelo"],
+        seguridad:["No cruzar cables; orden visual"],
+        errores:["Nodos mal conectados en paralelo → efecto serie"],
+        vocabulario:["Serie", "Paralelo", "Rama", "Nodo"],
+        diferenciacion:["6–8: plantilla de puntos", "9–12: lectura de símbolos", "13–14: medir V/I (opcional)"],
+        extensiones:["Mini luces navideñas", "Maqueta con dos ambientes"],
+        logistica:["Zonas separadas en la base; etiquetas visibles"],
+        mensaje:"Cómo conectamos importa tanto como qué conectamos.",
+        ceremonia:"Piocha del Circuito ⚡🔗"
+      },
+
+      // =============== S9 ===============
+      {
+        id:9,
+        titulo:"Generadores de energía",
+        subtitulo:"Crear electricidad con movimiento",
+        badge:"S9 • Energía",
+        iniciativa:"Usaremos un motor como dinamo para generar electricidad y encender una mini ciudad.",
+        objetivo:[
+          "Montar un generador manual (motor DC + manivela) y obtener voltaje.",
+          "Encender ≥2 LEDs durante 10 s de giro suave.",
+          "Relacionar velocidad de giro con brillo.",
+          "Conectar con energías renovables (viento/agua) de forma conceptual."
+        ],
+        materiales:["Motor DC, manivela/rueda, 2–4 LEDs, base de ciudad, cables, multímetro (op.), decoraciones"],
+        paso:[
+          {titulo:"Activación (5')", items:["Demostración: girar → encender LED"]},
+          {titulo:"Desafío (5')", items:["Iluminar 2 LEDs por 10 s con giro constante"]},
+          {titulo:"Construcción (25')", items:["Armar generador (10'), mini ciudad (8'), optimizar (7')"]},
+          {titulo:"Medición (5')", items:["Observar voltaje/brillo vs velocidad (si hay multímetro)"]},
+          {titulo:"Cierre (5')", items:["Expo de ciudades energéticas"]}
+        ],
+        preguntas:["¿Qué se mueve dentro del motor para generar electricidad?", "¿Qué fuentes mueven turbinas reales?", "¿Qué pasa al girar más rápido?"],
+        respuestas:["Imanes y bobinas: el movimiento relativo induce corriente.", "Agua (hidro), viento (eólico), vapor (termo).", "Más velocidad → más energía (más brillo)."],
+        incentivar:["Competencia 'ciudad más brillante'", "Carteles con nombre de la ciudad"],
+        exposicion:["Demostración del generador, explicar conversión mecánica→eléctrica, mostrar efecto de la velocidad"],
+        felicitacion:"¡Generación lograda! Piocha del Generador ⚡⚙️.",
+        foco:["Transformación de energía y sostenibilidad"],
+        apoyos:["Generador base pre-armado; plantillas de edificios; ayuda al giro"],
+        evaluacion:["Enciende 2 LEDs por 10 s", "Explica velocidad–brillo"],
+        seguridad:["Sujetar bien la base; no forzar ejes del motor; cuidado con piezas pequeñas"],
+        errores:["Conexión suelta → parpadeo; giro irregular → caída de brillo"],
+        vocabulario:["Dinamo", "Turbina", "Energía mecánica/eléctrica"],
+        diferenciacion:["6–8: manivela grande y estable", "9–12: medir con multímetro", "13–14: rectificación simple (noción)"],
+        extensiones:["Molino de viento de papel", "Rueda hidráulica mini"],
+        logistica:["Pistas de prueba; fijar generadores a la mesa con cinta"],
+        mensaje:"La electricidad se genera: podemos usar movimiento y fuentes renovables.",
+        ceremonia:"Piocha del Generador ⚡⚙️"
+      },
+
+      // =============== S10 ===============
+      {
+        id:10,
+        titulo:"Feria STEAM final",
+        subtitulo:"Mejora, presentación y celebración",
+        badge:"S10 • Cierre",
+        iniciativa:"Culminaremos mejorando un proyecto y presentándolo como ingenieros.",
+        objetivo:[
+          "Elegir un proyecto previo y planificar mejoras técnicas/estéticas.",
+          "Preparar un pitch de 2 minutos con estructura clara.",
+          "Exponer frente a audiencia y recibir retroalimentación.",
+          "Celebrar logros con entrega de diplomas."
+        ],
+        materiales:["Materiales previos, cartulinas para póster, marcadores, stickers premium, certificados"],
+        paso:[
+          {titulo:"Activación (5')", items:["Revisar proyectos y elegir favorito"]},
+          {titulo:"Desafío (5')", items:["Mejorar el proyecto y preparar pitch (Problema → Diseño → Aprendizaje → Mejora)"]},
+          {titulo:"Construcción (25')", items:["Implementar mejora (15'), crear póster y practicar (10')"]},
+          {titulo:"Medición (5')", items:["Checklist del pitch (5 puntos)"]},
+          {titulo:"Cierre (5')", items:["Feria con familias y entrega de diplomas"]}
+        ],
+        preguntas:["¿Qué problema resuelve?", "¿Qué aprendiste de electricidad?", "¿Cómo lo mejorarías?"],
+        respuestas:["Narrativa guiada con evidencias: diseño, dificultad superada, aprendizaje, proyección"],
+        incentivar:["Ambiente de feria profesional; roles de 'inversores'"],
+        exposicion:["Pitch 2 min: 1) Problema 2) Diseño 3) Dificultad 4) Aprendizaje 5) Mejora"],
+        felicitacion:"¡Graduación! Diploma y Piocha Maestra ⚡🏆.",
+        foco:["Síntesis de conceptos 1–9; aplicación cotidiana"],
+        apoyos:["Formatos alternativos; acompañamiento emocional; expectativas flexibles"],
+        evaluacion:["Mejora implementada", "Pitch claro", "Conecta con aprendizajes"],
+        seguridad:["Orden en el aula; tránsito seguro de familias; cuidado de piezas pequeñas"],
+        errores:["Leer sin contacto visual; exceder tiempo → practicar con timer"],
+        vocabulario:["Prototipo", "Iteración", "Pitch", "Evidencia"],
+        diferenciacion:["6–8: demostración práctica con ayuda", "9–12: póster con 3 viñetas", "13–14: rol de anfitrión de stand"],
+        extensiones:["Galería digital (fotos/videos)", "Encuesta breve a familias"],
+        logistica:["Asignar stands, flujo de público, música suave de fondo"],
+        mensaje:"La ingeniería es crear, mejorar y comunicar.",
+        ceremonia:"Diploma y Piocha Maestra ⚡🏆"
+      }
+    ];
+
+    // =============================
+    // RENDER DEL MENÚ
+    // =============================
+    const cards = document.getElementById('cards');
+    sesiones.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `
+        <span class="badge">${s.badge}</span>
+        <h3>Clase ${String(s.id).padStart(2,'0')}: ${s.titulo}</h3>
+        <p>${s.subtitulo}</p>
+        <button aria-label="Abrir guía de la Clase ${s.id}">Abrir guía</button>
+      `;
+      el.querySelector('button').addEventListener('click', () => openPanel(s));
+      cards.appendChild(el);
+    });
+
+    // =============================
+    // PANEL CON PESTAÑAS
+    // =============================
+    const overlay = document.getElementById('overlay');
+    const panel = document.getElementById('panel');
+    const panelTitle = document.getElementById('panelTitle');
+    const tabs = document.getElementById('tabs');
+    const tabContent = document.getElementById('tabContent');
+    const closeBtn = document.getElementById('closeBtn');
+    const printBtn = document.getElementById('printBtn');
+
+// Orden de pestañas
+const TAB_ORDER = [
+  {key:'resumen', label:'Resumen'},
+  {key:'objetivo', label:'Objetivos'},
+  {key:'materiales', label:'Materiales'},
+  {key:'paso', label:'Paso a paso'},
+  {key:'preguntas', label:'Preguntas clave'},
+  {key:'respuestas', label:'Respuestas guía'},
+  {key:'foco', label:'Enfoques clave'},
+  {key:'seguridad', label:'Seguridad'},
+  {key:'errores', label:'Errores comunes'},
+  {key:'vocabulario', label:'Vocabulario'},
+  {key:'apoyos', label:'Ayudas/NEE'},
+  {key:'diferenciacion', label:'Diferenciación'},
+  {key:'evaluacion', label:'Evaluación'},
+  {key:'exposicion', label:'Exposición'},
+  {key:'incentivar', label:'Motivación'},
+  {key:'extensiones', label:'Extensiones'},
+  {key:'logistica', label:'Logística'},
+  {key:'mensaje', label:'Mensaje final'},
+  {key:'ceremonia', label:'Ceremonia'}
+];
+
+let current = null;
+
+function openPanel(s){
+  current = s;
+  overlay.classList.add('show');
+  panel.classList.add('open');
+  overlay.setAttribute('aria-hidden','false');
+  panelTitle.textContent = `Clase ${String(s.id).padStart(2,'0')}: ${s.titulo}`;
+  renderTabs(s);
+  renderTab(s, 'resumen');
+  setTimeout(()=>{ panel.querySelector('.tab-btn')?.focus(); }, 50);
+}
+
+function closePanel(){
+  overlay.classList.remove('show');
+  panel.classList.remove('open');
+  overlay.setAttribute('aria-hidden','true');
+}
+
+function renderTabs(s){
+  tabs.innerHTML = '';
+  TAB_ORDER.forEach((t,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
+    btn.textContent = t.label;
+    btn.setAttribute('data-key', t.key);
+    btn.addEventListener('click', ()=>{
+      tabs.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTab(s, t.key);
+    });
+    tabs.appendChild(btn);
+  });
+}
+
+function renderList(items){
+  if(!items || !items.length) return '<p class="tip">—</p>';
+  return `<ul>${items.map(i=>`<li>${escapeHTML(i)}</li>`).join('')}</ul>`;
+}
+
+function sectionHTML(title, html){
+  return `<section><h4>${title}</h4>${html}</section>`;
+}
+
+function renderTab(s, key){
+  const blocks = [];
+  if(key==='resumen'){
+    blocks.push(sectionHTML('Iniciativa / Presentación', `<p>${escapeHTML(s.iniciativa || '')}</p>`));
+    blocks.push(sectionHTML('Subtítulo', `<div class="pill">${escapeHTML(s.subtitulo || '')}</div>`));
+    blocks.push(sectionHTML('Estructura de la sesión (tiempos)', `
+      <div class="kpi">
+        <div class="pill">Activación 5′</div>
+        <div class="pill">Desafío 5′</div>
+        <div class="pill">Construcción 25′</div>
+        <div class="pill">Medición 5′</div>
+        <div class="pill">Cierre 5′</div>
+      </div>`));
+  }
+  if(key==='objetivo') blocks.push(sectionHTML('Objetivos de aprendizaje', renderList(s.objetivo)));
+  if(key==='materiales') blocks.push(sectionHTML('Materiales por estudiante/equipo', renderList(s.materiales)));
+  if(key==='paso'){
+    const html = (s.paso||[]).map(p=>`<div style="margin:10px 0"> <strong>${escapeHTML(p.titulo)}</strong>${renderList(p.items)}</div>`).join('');
+    blocks.push(sectionHTML('Secuencia didáctica detallada', html || '<p class="tip">—</p>'));
+  }
+  if(key==='preguntas') blocks.push(sectionHTML('Preguntas para activar pensamiento', renderList(s.preguntas)));
+  if(key==='respuestas') blocks.push(sectionHTML('Respuestas / ideas guía (docente)', renderList(s.respuestas)));
+  if(key==='foco') blocks.push(sectionHTML('Conceptos y enfoques clave', renderList(s.foco)));
+  if(key==='seguridad') blocks.push(sectionHTML('Protocolos de seguridad', renderList(s.seguridad)));
+  if(key==='errores') blocks.push(sectionHTML('Errores frecuentes y solución', renderList(s.errores)));
+  if(key==='vocabulario') blocks.push(sectionHTML('Vocabulario esencial', renderList(s.vocabulario)));
+  if(key==='apoyos') blocks.push(sectionHTML('Ayudas / NEE / accesibilidad', renderList(s.apoyos)));
+  if(key==='diferenciacion') blocks.push(sectionHTML('Diferenciación por edades', renderList(s.diferenciacion)));
+  if(key==='evaluacion') blocks.push(sectionHTML('Evaluación formativa (evidencias / rúbrica)', renderList(s.evaluacion)));
+  if(key==='exposicion') blocks.push(sectionHTML('Cómo exponer el proyecto', renderList(s.exposicion)));
+  if(key==='incentivar') blocks.push(sectionHTML('Estrategias de motivación', renderList(s.incentivar)));
+  if(key==='extensiones') blocks.push(sectionHTML('Extensiones / tareas opcionales', renderList(s.extensiones)));
+  if(key==='logistica') blocks.push(sectionHTML('Logística y preparación', renderList(s.logistica)));
+  if(key==='mensaje') blocks.push(sectionHTML('Mensaje que queda / aprendizaje', `<p>${escapeHTML(s.mensaje || '')}</p>`));
+  if(key==='ceremonia') blocks.push(sectionHTML('Cierre ceremonial', `<p>${escapeHTML(s.ceremonia || '')}</p>`));
+  tabContent.innerHTML = blocks.join('');
+}
+
+function escapeHTML(str){
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+// Eventos globales
+closeBtn.addEventListener('click', closePanel);
+overlay.addEventListener('click', closePanel);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closePanel(); });
+
+// Imprimir solo el panel
+printBtn.addEventListener('click', ()=>{
+  const main = document.querySelector('main');
+  main.style.display = 'none';
+  window.print();
+  setTimeout(()=>{ main.style.display = ''; }, 250);
+});
+
+// (Si tu archivo quedó cortado, pega desde aquí hasta el final del </script> y cierra body/html)
+</script>
+</body>
+</html>
